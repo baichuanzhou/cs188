@@ -556,7 +556,7 @@ class ClosestDotSearchAgent(SearchAgent):
         walls = gameState.getWalls()
         problem = AnyFoodSearchProblem(gameState)
         "*** YOUR CODE HERE ***"
-        return search.dfs(problem)
+        return search.ucs(problem)
 
 
 def astarHeuristic(state, problem):
