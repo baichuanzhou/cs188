@@ -103,13 +103,13 @@ def depthFirstSearch(problem):
         if fringe.isEmpty():
             return []
         state = fringe.pop()
-        if problem.isGoalState(state.loc):
+        if problem.isGoalState(state.state):
             return state.path
-        if state.loc not in closed:
-            closed.add(state.loc)
-            for child in problem.getSuccessors(state.loc):
+        if state.state not in closed:
+            closed.add(state.state)
+            for child in problem.getSuccessors(state.state):
                 child_node = Node(child)
-                if child_node.loc not in closed:
+                if child_node.state not in closed:
                     child_node.path = state.path + [child_node.dir]
                     fringe.push(child_node)
 
@@ -126,13 +126,13 @@ def breadthFirstSearch(problem):
         if fringe.isEmpty():
             return []
         state = fringe.pop()
-        if problem.isGoalState(state.loc):
+        if problem.isGoalState(state.state):
             return state.path
-        if state.loc not in closed:
-            closed.add(state.loc)
-            for child in problem.getSuccessors(state.loc):
+        if state.state not in closed:
+            closed.add(state.state)
+            for child in problem.getSuccessors(state.state):
                 child_node = Node(child)
-                if child_node.loc not in closed:
+                if child_node.state not in closed:
                     child_node.path = state.path + [child_node.dir]
                     fringe.push(child_node)
 
@@ -150,17 +150,16 @@ def uniformCostSearch(problem):
         if fringe.isEmpty():
             return []
         state = fringe.pop()
-        if problem.isGoalState(state.loc):
+        if problem.isGoalState(state.state):
             return state.path
-        if state.loc not in closed:
-            closed.add(state.loc)
-            for child in problem.getSuccessors(state.loc):
+        if state.state not in closed:
+            closed.add(state.state)
+            for child in problem.getSuccessors(state.state):
                 child_node = Node(child)
-                if child_node.loc not in closed:
+                if child_node.state not in closed:
                     child_node.path = state.path + [child_node.dir]
                     child_node.ucs_heuristic += state.ucs_heuristic
                     fringe.update(child_node, child_node.ucs_heuristic)
-
 
 
 def nullHeuristic(state, problem=None):
@@ -178,22 +177,23 @@ def aStarSearch(problem, heuristic=nullHeuristic):
     starter_state = problem.getStartState()
     fringe = util.PriorityQueue()
     starter_node = Node((starter_state, [], 0))
+    starter_node.astar_heuristic = heuristic(starter_node.state, problem) + starter_node.ucs_heuristic
     fringe.update(starter_node, starter_node.astar_heuristic)
     closed = set()
     while True:
         if fringe.isEmpty():
             return []
         state = fringe.pop()
-        if problem.isGoalState(state.loc):
+        if problem.isGoalState(state.state):
             return state.path
-        if state.loc not in closed:
-            closed.add(state.loc)
-            for child in problem.getSuccessors(state.loc):
+        if state.state not in closed:
+            closed.add(state.state)
+            for child in problem.getSuccessors(state.state):
                 child_node = Node(child)
-                if child_node.loc not in closed:
+                if child_node.state not in closed:
                     child_node.ucs_heuristic += state.ucs_heuristic
                     child_node.path = state.path + [child_node.dir]
-                    child_node.astar_heuristic = heuristic(child_node.loc, problem)
+                    child_node.astar_heuristic = child_node.ucs_heuristic + heuristic(child_node.state, problem)
                     fringe.push(child_node, child_node.astar_heuristic)
 
 
@@ -206,7 +206,7 @@ ucs = uniformCostSearch
 
 class Node:
     def __init__(self, state):
-        self.loc = state[0]
+        self.state = state[0]
         self.dir = state[1]
         self.cost = state[2]
         self.path = []
