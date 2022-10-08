@@ -11,10 +11,12 @@
 # Student side autograding was added by Brad Miller, Nick Hay, and
 # Pieter Abbeel (pabbeel@cs.berkeley.edu).
 
-
-import util
-import random
+from game import *
 from learningAgents import ReinforcementAgent
+from featureExtractors import *
+
+import random,util,math
+
 
 
 class QLearningAgent(ReinforcementAgent):
@@ -144,7 +146,7 @@ class QLearningAgent(ReinforcementAgent):
 
 
 class PacmanQAgent(QLearningAgent):
-    "Exactly the same as QLearningAgent, but with different default parameters"
+    """Exactly the same as QLearningAgent, but with different default parameters"""
 
     def __init__(self, epsilon=0.05, gamma=0.8, alpha=0.2, numTraining=0, **args):
         """
@@ -198,14 +200,27 @@ class ApproximateQAgent(PacmanQAgent):
           where * is the dotProduct operator
         """
         "*** YOUR CODE HERE ***"
-        util.raiseNotDefined()
+        # util.raiseNotDefined()
+        QValue = 0
+        features = self.featExtractor.getFeatures(state, action)
+        for i in features:
+            QValue += features[i] * self.weights[i]
+        return QValue
 
     def update(self, state, action, nextState, reward):
         """
            Should update your weights based on transition
         """
         "*** YOUR CODE HERE ***"
-        util.raiseNotDefined()
+        # util.raiseNotDefined()
+        QValue = self.getQValue(state, action)
+        nextValue = self.getValue(nextState)
+
+        difference = (reward + self.discount * nextValue) - QValue
+
+        features = self.featExtractor.getFeatures(state, action)
+        for i in features:
+            self.weights[i] = self.weights[i] + self.alpha * difference * features[i]
 
     def final(self, state):
         "Called at the end of each game."
