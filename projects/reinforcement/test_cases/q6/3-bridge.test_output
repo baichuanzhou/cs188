@@ -1,0 +1,22 @@
+Policy is NOT correct.   Student solution:
+	policy: """
+        __________   exit         __________
+        exit         west         exit      
+        exit         south        exit      
+        exit         east         exit      
+        exit         east         exit      
+        exit         east         exit      
+        __________   exit         __________
+"""
+
+   Correct solution:
+	policy: """
+        __________   exit         __________
+        exit         north        exit      
+        exit         north        exit      
+        exit         north        exit      
+        exit         north        exit      
+        exit         north        exit      
+        __________   exit         __________
+"""
+
