@@ -335,7 +335,13 @@ class ExactInference(InferenceModule):
         """
         "*** YOUR CODE HERE ***"
         # raiseNotDefined()
-
+        allPositions = self.allPositions
+        beliefPrime = DiscreteDistribution()
+        for oldPos in allPositions:
+            newPosDist = self.getPositionDistribution(gameState, oldPos)
+            for newPos, newProb in newPosDist.items():
+                beliefPrime[newPos] += newProb * self.beliefs[oldPos]
+        self.beliefs = beliefPrime
 
     def getBeliefDistribution(self):
         return self.beliefs
